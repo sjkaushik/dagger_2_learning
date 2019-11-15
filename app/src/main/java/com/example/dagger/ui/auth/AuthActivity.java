@@ -1,11 +1,15 @@
-package com.example.dagger;
+package com.example.dagger.ui.auth;
 
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.bumptech.glide.RequestManager;
+import com.example.dagger.R;
+import com.example.dagger.network.auth.Authapi;
 
 import javax.inject.Inject;
 
@@ -19,6 +23,9 @@ public class AuthActivity extends DaggerAppCompatActivity {
     @Inject
     Drawable appLogo;
 
+    @Inject
+    AuthViewModel authViewModel;
+
     private static final String TAG = "AuthActivity";
 
     @Override
@@ -27,6 +34,7 @@ public class AuthActivity extends DaggerAppCompatActivity {
         setContentView(R.layout.activity_auth);
 
         setLogo();
+
     }
 
     private void setLogo() {
