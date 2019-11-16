@@ -1,7 +1,10 @@
 package com.example.dagger.ui.auth;
 
-import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.dagger.model.UserModel;
@@ -9,43 +12,54 @@ import com.example.dagger.network.auth.Authapi;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+
 
 public class AuthViewModel extends ViewModel {
 
     private static final String TAG = "AuthViewModel";
     private Authapi authapi;
 
+    private MediatorLiveData<AuthResource<UserModel>> authUser = new MediatorLiveData();
+
     @Inject
     public AuthViewModel(Authapi authapi) {
         this.authapi = authapi;
 
-        authapi.getUser(1)
-                .toObservable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<UserModel>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+    }
 
-                    }
+    public void authenticateWithId(int id) {
 
-                    @Override
-                    public void onNext(UserModel userModel) {
+        authUser.setValue(AuthResource.loading(null));
 
-                        Log.d(TAG, "onNext: "+userModel.getEmail());
-                    }
+        final LiveData<AuthResource<UserModel>> source = LiveDataReactiveStreams.fromPublisher(
+                authapi.getUser(id)
 
-                    @Override
-                    public void onError(Throwable e) {
+                        .onErrorReturn(throwable -> {
+                            UserModel errorUserModel = new UserModel();
+                            errorUserModel.setId(-1);
+                            return errorUserModel;
+                        })
 
-                    }
+                        .map((Function<UserModel, AuthResource<UserModel>>) userModel -> {
+                            if (userModel.getId() == -1) {
+                                return AuthResource.error("could not authenticated", null);
+                            }
 
-                    @Override
-                    public void onComplete() {
+                            return AuthResource.authenticated(userModel);
+                        })
+                        .subscribeOn(Schedulers.io())
+        );
 
-                    }
-                });
+        authUser.addSource(source, userModel -> {
+            authUser.setValue(userModel);
+            authUser.removeSource(source);
+        });
+    }
+
+
+    public MediatorLiveData<AuthResource<UserModel>> observerUser() {
+        return authUser;
     }
 }
