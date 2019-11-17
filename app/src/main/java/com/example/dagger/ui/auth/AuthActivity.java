@@ -1,6 +1,7 @@
 package com.example.dagger.ui.auth;
 
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.RequestManager;
 import com.example.dagger.R;
+import com.example.dagger.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
@@ -80,6 +82,7 @@ public class AuthActivity extends DaggerAppCompatActivity {
 
                     case AUTHENTICATED: {
                         showProgressBar(false);
+                        navMainScreen();
                         Log.d(TAG, "subscribeObservable: " + userModelAuthResource.data.getUsername());
                     }
                     break;
@@ -103,6 +106,11 @@ public class AuthActivity extends DaggerAppCompatActivity {
         else
             progressBar.setVisibility(View.GONE);
 
+    }
+
+    private void navMainScreen(){
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     private void setLogo() {
