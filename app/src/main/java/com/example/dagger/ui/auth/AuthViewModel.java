@@ -1,12 +1,14 @@
 package com.example.dagger.ui.auth;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.dagger.SessionManager;
 import com.example.dagger.model.UserModel;
 import com.example.dagger.network.auth.Authapi;
 
@@ -20,20 +22,25 @@ public class AuthViewModel extends ViewModel {
 
     private static final String TAG = "AuthViewModel";
     private Authapi authapi;
-
-    private MediatorLiveData<AuthResource<UserModel>> authUser = new MediatorLiveData();
+    private SessionManager sessionManager;
 
     @Inject
-    public AuthViewModel(Authapi authapi) {
+    public AuthViewModel(Authapi authapi,SessionManager sessionManager) {
         this.authapi = authapi;
-
+        this.sessionManager = sessionManager;
     }
 
     public void authenticateWithId(int id) {
 
-        authUser.setValue(AuthResource.loading(null));
+        Log.d(TAG, "authenticateWithId: Attempting login");
 
-        final LiveData<AuthResource<UserModel>> source = LiveDataReactiveStreams.fromPublisher(
+        sessionManager.authenticateWithId(queryId(id));
+
+    }
+
+    public LiveData<AuthResource<UserModel>> queryId(int id) {
+
+        return LiveDataReactiveStreams.fromPublisher(
                 authapi.getUser(id)
 
                         .onErrorReturn(throwable -> {
@@ -51,15 +58,10 @@ public class AuthViewModel extends ViewModel {
                         })
                         .subscribeOn(Schedulers.io())
         );
-
-        authUser.addSource(source, userModel -> {
-            authUser.setValue(userModel);
-            authUser.removeSource(source);
-        });
     }
 
 
-    public MediatorLiveData<AuthResource<UserModel>> observerUser() {
-        return authUser;
+    public MediatorLiveData<AuthResource<UserModel>> setObserverState() {
+        return sessionManager.getAuthenticatedUser();
     }
 }

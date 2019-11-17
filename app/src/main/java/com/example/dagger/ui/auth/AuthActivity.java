@@ -60,7 +60,7 @@ public class AuthActivity extends DaggerAppCompatActivity {
     private void subscribeObservable() {
 
 
-        authViewModel.observerUser().observe(this, userModelAuthResource -> {
+        authViewModel.setObserverState().observe(this, userModelAuthResource -> {
 
             if (userModelAuthResource != null) {
 
