@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.example.dagger.BaseActivity;
 import com.example.dagger.R;
+import com.example.dagger.ui.main.fragment.ProfileFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -20,9 +21,15 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this, "Main Activity", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Main Activity", Toast.LENGTH_SHORT).show();
+
+        attachView();
     }
 
+    private void attachView() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_profile, new ProfileFragment()).commit();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
