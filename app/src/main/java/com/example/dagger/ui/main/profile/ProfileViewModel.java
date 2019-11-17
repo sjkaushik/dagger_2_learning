@@ -1,4 +1,4 @@
-package com.example.dagger.ui.main.fragment;
+package com.example.dagger.ui.main.profile;
 
 import android.util.Log;
 

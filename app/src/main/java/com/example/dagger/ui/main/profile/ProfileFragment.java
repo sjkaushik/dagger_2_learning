@@ -1,4 +1,4 @@
-package com.example.dagger.ui.main.fragment;
+package com.example.dagger.ui.main.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

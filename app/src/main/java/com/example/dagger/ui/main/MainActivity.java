@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.dagger.BaseActivity;
 import com.example.dagger.R;
-import com.example.dagger.ui.main.fragment.ProfileFragment;
+import com.example.dagger.ui.main.post.PostFragment;
+import com.example.dagger.ui.main.profile.ProfileFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -27,7 +27,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void attachView() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_profile, new ProfileFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_profile, new PostFragment()).commit();
 
     }
 
