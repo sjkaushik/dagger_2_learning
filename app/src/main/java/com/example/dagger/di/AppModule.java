@@ -10,7 +10,9 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.dagger.BuildConfig;
 import com.example.dagger.R;
+import com.example.dagger.model.UserModel;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -61,6 +63,13 @@ public class AppModule {
     @Provides
     static Drawable provideDrawable(Application application) {
         return ContextCompat.getDrawable(application, R.drawable.logo);
+    }
+
+    @Singleton
+    @Provides
+    @Named("user_single")
+    static UserModel provideUser(){
+        return new UserModel();
     }
 
 }

@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dagger.R;
+import com.example.dagger.ui.main.profile.PostsRecyclerAdapter;
 
 import javax.inject.Inject;
 
@@ -18,9 +21,14 @@ import dagger.android.support.DaggerFragment;
 public class PostFragment extends DaggerFragment {
 
     private static final String TAG = "PostFragment";
+    private RecyclerView recyclerView;
 
     @Inject
     PostViewModel postViewModel;
+
+    @Inject
+    PostsRecyclerAdapter postsRecyclerAdapter;
+
 
     @Nullable
     @Override
@@ -31,8 +39,9 @@ public class PostFragment extends DaggerFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recycler_view);
 
+        initRecyclerView();
         subscribeObserver();
     }
 
@@ -40,12 +49,34 @@ public class PostFragment extends DaggerFragment {
 
         postViewModel.observePosts().removeObservers(getViewLifecycleOwner());
 
-        postViewModel.observePosts().observe(getViewLifecycleOwner(),observer ->{
+        postViewModel.observePosts().observe(getViewLifecycleOwner(), observer -> {
 
-            if(observer!=null){
+            if (observer != null) {
 
-                Log.d(TAG, "subscribeObserver: "+observer.data);
+                switch (observer.status) {
+
+                    case LOADING: {
+                        Log.d(TAG, "onChanged: LOADING...");
+                        break;
+                    }
+
+                    case SUCCESS: {
+                        Log.d(TAG, "onChanged: got posts...");
+                        postsRecyclerAdapter.setPosts(observer.data);
+                        break;
+                    }
+
+                    case ERROR: {
+                        Log.e(TAG, "onChanged: ERROR..." + observer.message);
+                        break;
+                    }
+                }
             }
         });
+    }
+
+    private void initRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(postsRecyclerAdapter);
     }
 }

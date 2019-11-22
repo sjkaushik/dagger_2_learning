@@ -12,11 +12,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.RequestManager;
 import com.example.dagger.R;
+import com.example.dagger.model.UserModel;
 import com.example.dagger.ui.main.MainActivity;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
@@ -30,6 +33,14 @@ public class AuthActivity extends DaggerAppCompatActivity {
 
     @Inject
     AuthViewModel authViewModel;
+
+    @Inject
+    @Named("user_single")
+    UserModel user;
+
+    @Inject
+    @Named("user_auth")
+    UserModel userAuth;
 
     private TextView tvUserId;
     private Button loginBtn;
@@ -46,6 +57,9 @@ public class AuthActivity extends DaggerAppCompatActivity {
         tvUserId = findViewById(R.id.user_id_input);
         loginBtn = (findViewById(R.id.login_button));
         progressBar = findViewById(R.id.progress_bar);
+
+        Log.d(TAG, "onCreate: UserModel " + user);
+        Log.d(TAG, "onCreate: UserModel Auth" + userAuth);
 
         loginBtn.setOnClickListener(v -> {
 
@@ -108,7 +122,7 @@ public class AuthActivity extends DaggerAppCompatActivity {
 
     }
 
-    private void navMainScreen(){
+    private void navMainScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

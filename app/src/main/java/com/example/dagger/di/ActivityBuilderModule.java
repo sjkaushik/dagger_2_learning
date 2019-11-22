@@ -1,6 +1,7 @@
 package com.example.dagger.di;
 
 import com.example.dagger.di.auth.AuthModule;
+import com.example.dagger.di.auth.AuthScope;
 import com.example.dagger.ui.auth.AuthActivity;
 import com.example.dagger.ui.main.MainActivity;
 import com.example.dagger.ui.main.post.PostFragment;
@@ -12,6 +13,7 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivityBuilderModule {
 
+    @AuthScope
     @ContributesAndroidInjector(
             modules = {
                     AuthModule.class,
@@ -19,6 +21,7 @@ public abstract class ActivityBuilderModule {
     )
     abstract AuthActivity authActivityContributes();
 
+    @AuthScope
     @ContributesAndroidInjector(modules = {
             AuthModule.class
     })
